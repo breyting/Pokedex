@@ -8,8 +8,14 @@ import (
 )
 
 var listOfCommands map[string]cliCommand
+var conf config
 
 func start_repl() {
+	conf = config{
+		next:     "https://pokeapi.co/api/v2/location-area/1",
+		previous: "",
+	}
+
 	listOfCommands = map[string]cliCommand{
 		"exit": {
 			name:        "exit",
@@ -20,6 +26,16 @@ func start_repl() {
 			name:        "help",
 			description: "Displays a help message",
 			callback:    commandHelp,
+		},
+		"map": {
+			name:        "map",
+			description: "Displays the 20 next area location",
+			callback:    commandMap,
+		},
+		"mapb": {
+			name:        "mapb",
+			description: "Displays the 20 previous area location",
+			callback:    commandMapb,
 		},
 	}
 
@@ -36,7 +52,7 @@ func start_repl() {
 
 		command, exists := listOfCommands[input[0]]
 		if exists {
-			err := command.callback()
+			err := command.callback(&conf)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -52,24 +68,13 @@ func cleanInput(text string) []string {
 	return words
 }
 
-func commandExit() error {
-	fmt.Println("Closing the Pokedex... Goodbye!")
-	os.Exit(0)
-	return nil
-}
-
-func commandHelp() error {
-	fmt.Println("Welcome to the Pokedex!")
-	fmt.Println("Usage :\n")
-
-	for _, command := range listOfCommands {
-		fmt.Printf("%s: %s\n", command.name, command.description)
-	}
-	return nil
-}
-
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(*config) error
+}
+
+type config struct {
+	next     string
+	previous string
 }
