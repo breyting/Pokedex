@@ -39,6 +39,8 @@ func start_repl() {
 		},
 	}
 
+	cache := NewCache
+
 	scan := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
