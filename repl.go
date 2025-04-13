@@ -39,7 +39,7 @@ func start_repl() {
 		},
 	}
 
-	cache := NewCache
+	cache := NewCache(5)
 
 	scan := bufio.NewScanner(os.Stdin)
 	for {
