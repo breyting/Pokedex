@@ -46,6 +46,16 @@ func start_repl() {
 			description: "Displays the pokemon that you can encounter in the location",
 			callback:    commandExplore,
 		},
+		"catch": {
+			name:        "catch",
+			description: "Try to catch a pokemon",
+			callback:    commandCatch,
+		},
+		"inspect": {
+			name:        "inspect",
+			description: "Inspect details of a catched pokemon",
+			callback:    commandinspect,
+		},
 	}
 
 	scan := bufio.NewScanner(os.Stdin)

@@ -35,7 +35,7 @@ func commandExplore(config *config, input []string) error {
 		}
 		defer res.Body.Close()
 		if res.StatusCode > 299 {
-			msg := fmt.Sprintf("Response failed with status code: %d and\nbody: %s\n", res.StatusCode, res.Body)
+			msg := fmt.Sprintf("This location doesn't exist!")
 			return errors.New(msg)
 		}
 
