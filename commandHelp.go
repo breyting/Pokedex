@@ -2,10 +2,10 @@ package main
 
 import "fmt"
 
-func commandHelp(config *config) error {
+func commandHelp(config *config, input []string) error {
 	fmt.Println("Welcome to the Pokedex!")
-	fmt.Println("Usage :\n")
-
+	fmt.Println("Usage :")
+	fmt.Println()
 	for _, command := range listOfCommands {
 		fmt.Printf("%s: %s\n", command.name, command.description)
 	}

@@ -5,10 +5,14 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
+
+	pokecache "github.com/breyting/pokedex/internal"
 )
 
 var listOfCommands map[string]cliCommand
 var conf config
+var cache = pokecache.NewCache((5 * time.Second))
 
 func start_repl() {
 	conf = config{
@@ -37,9 +41,12 @@ func start_repl() {
 			description: "Displays the 20 previous area location",
 			callback:    commandMapb,
 		},
+		"explore": {
+			name:        "explore",
+			description: "Displays the pokemon that you can encounter in the location",
+			callback:    commandExplore,
+		},
 	}
-
-	cache := NewCache(5)
 
 	scan := bufio.NewScanner(os.Stdin)
 	for {
@@ -54,7 +61,7 @@ func start_repl() {
 
 		command, exists := listOfCommands[input[0]]
 		if exists {
-			err := command.callback(&conf)
+			err := command.callback(&conf, input[1:])
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -73,7 +80,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*config) error
+	callback    func(*config, []string) error
 }
 
 type config struct {

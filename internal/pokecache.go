@@ -19,6 +19,9 @@ func NewCache(interval time.Duration) Cache {
 	cache := Cache{
 		cacheEntries: map[string]CacheEntry{},
 	}
+
+	go cache.reapLoop(interval)
+
 	return cache
 }
 
@@ -43,13 +46,22 @@ func (cache *Cache) Get(key string) ([]byte, bool) {
 	}
 }
 
-func (cache *Cache) readLoop(interval time.Duration) {
-	for entry, val := range cache.cacheEntries {
-		limit := val.createdAt.Add(interval)
-		if limit.Before(time.Now()) {
-			cache.mu.Lock()
-			delete(cache.cacheEntries, entry)
-			cache.mu.Unlock()
+func (cache *Cache) reapLoop(interval time.Duration) {
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ticker.C:
+			for entry, val := range cache.cacheEntries {
+				limit := val.createdAt.Add(interval)
+				if limit.Before(time.Now()) {
+					cache.mu.Lock()
+					delete(cache.cacheEntries, entry)
+					cache.mu.Unlock()
+				}
+			}
 		}
 	}
+
 }
