@@ -60,6 +60,7 @@ func tryingCatch(pokemonInfo Pokemon) {
 	if chance < 50 {
 		fmt.Printf("%s was caught!\n", pokemonInfo.Name)
 		ownPokedex[pokemonInfo.Name] = pokemonInfo
+		fmt.Println("You may now inspect it with the inspect command.")
 	} else {
 		fmt.Printf("%s escaped!\n", pokemonInfo.Name)
 	}
